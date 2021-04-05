@@ -1,0 +1,37 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://login.microsoftonline.com/f149f7de-cb02-4676-9d90-1267010bdd49/v2.0
+  cloud:
+    gateway:
+      routes:
+        - id: private
+          uri: http://httpbin.org
+          predicates:
+            - Path=/private/**
+          filters:
+            - RewritePath=/private(?<segment>/?.*), $\{segment}
+        - id: admin
+          uri: http://httpbin.org
+          predicates:
+            - Path=/admin/**
+          filters:
+            - RewritePath=/admin(?<segment>/?.*), $\{segment}
+            - Authorities=hasRole('ADMIN')
+        - id: public
+          uri: http://httpbin.org
+          predicates:
+            - Path=/public/**
+          filters:
+            - RewritePath=/public(?<segment>/?.*), $\{segment}
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: gateway
+logging:
+  level:
+    org.springframework: DEBUG
+    reactor.netty.http.client: DEBUG
