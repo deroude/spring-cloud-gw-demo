@@ -19,7 +19,7 @@ spring:
             - Path=/admin/**
           filters:
             - RewritePath=/admin(?<segment>/?.*), $\{segment}
-            - Authorities=hasRole('ADMIN')
+            - Authorities=hasRole('MANAGER')
         - id: public
           uri: http://httpbin.org
           predicates:
